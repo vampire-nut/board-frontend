@@ -1,14 +1,16 @@
 
+import CardItem from "@/src/components/CardPost";
+import MainLayout from "@/src/layouts/MainLayout";
 import { Typography } from "@mui/material";
 
 const Home = () => {
 
     return (
         <>
-            <Typography variant="H1"> TEST 1 </Typography>
+            <CardItem item={{}}></CardItem>
         </>
     );
 };
-Home.getLayout = (page: any) => <>{page}</>;
+Home.getLayout = (page: any) => <MainLayout>{page}</MainLayout>;
 
 export default Home;
