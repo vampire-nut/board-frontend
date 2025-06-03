@@ -16,20 +16,13 @@ export interface MenuItemProps {
   id: string;
   title: string;
   icon: string;
-  children?: readonly MenuItemProps[];
   path: string;
   disabled?: boolean;
-  expand?: boolean;
-  is_dashboard?: boolean;
-  is_show_count?: boolean;
-  path_api_count?: string;
-  count?: string;
 }
 
 interface MenuProps {
   item: MenuItemProps;
-  level: number;
-  isOpen?: boolean;
+  colorMain: string;
 }
 
 const noWrap: SxProps = {
@@ -39,26 +32,22 @@ const noWrap: SxProps = {
 };
 
 const activeMenu = {
-  backgroundColor: (theme: any) => theme.colors.primary.main,
   fontWeight: "700",
-  color: (theme: any) => theme.palette.common.white,
+  color: (theme: any) => theme.colors.green.main,
   "& .MuiListItemIcon-root": {
-    color: (theme: any) => theme.palette.common.white,
+    color: (theme: any) => theme.colors.green.main,
   },
 };
 const hoverMenu = {
-  backgroundColor: "#DBEBFF",
-  color: (theme: any) => theme.palette.common.black,
+  color: (theme: any) => theme.colors.green.main,
   "& .MuiListItemIcon-root": {
-    color: (theme: any) => theme.palette.common.black,
+    color: (theme: any) => theme.colors.green.main,
   },
 };
 
-const MenuItem = ({ item, isOpen = true }: MenuProps) => {
+const MenuItem = ({ item, colorMain }: MenuProps) => {
   const { pathname } = useRouter();
   const theme = useTheme();
-  const [open, setOpen] = useState<boolean>(isOpen);
-  const handleOpen = () => setOpen((prev) => !prev);
   const [isSelected, setIsSelected] = useState<boolean>(false);
 
   useEffect(() => {
@@ -69,16 +58,16 @@ const MenuItem = ({ item, isOpen = true }: MenuProps) => {
     })();
   }, [pathname]);
 
+
   return (
     <Box>
       <NextLink href={item?.path} style={{ textDecoration: "none" }}>
         <ListItemButton
-          onClick={() => handleOpen()}
           sx={{
             padding: 0,
             height: "42px",
             borderRadius: "8px",
-            fontWeight: "400",
+            fontWeight: 400,
             "&:hover": hoverMenu,
             "&.Mui-selected:hover": activeMenu,
             ...(isSelected && activeMenu),
@@ -89,11 +78,12 @@ const MenuItem = ({ item, isOpen = true }: MenuProps) => {
               sx={{
                 minWidth: "32px",
                 marginLeft: !!item?.icon ? "8px" : "0px",
+                color: colorMain,
               }}
             >
               <Iconify
-                icon={item.icon}
-                color={theme.colors.primary}
+                icon={item?.icon}
+                color={colorMain}
                 sx={{
                   width: 22,
                   height: 22,
@@ -104,9 +94,10 @@ const MenuItem = ({ item, isOpen = true }: MenuProps) => {
           <ListItemText
             sx={{
               "& .MuiListItemText-primary": {
-                fontWeight: isSelected ? 700 : "inherit",
+                fontWeight: isSelected ? 700 : 400,
                 ...noWrap,
               },
+              color: colorMain
             }}
             primary={item?.title}
           />

@@ -30,12 +30,19 @@ const down_md = breakpoints.down("md");
 const down_sm = breakpoints.down("sm");
 
 const themeColors = {
-  primary: "#1877F2",
-  secondary: "#4D8FF2",
-  black: "#222222",
-  white: "#ffffff",
-  success: "#34B428",
+  primary: "#243831",
+  secondary: "#2B5F44",
+  golden: "#C5A365",
+  text: "#191919",
+  black: "#000000",
+  white: "#FFFFFF",
+  success: "#49A569",
   error: "#E12E2B",
+  green500: "#243831",
+  green300: "#2B5F44",
+  green100: "#D8E9E4",
+  grey100: "#BBC2C0",
+  grey300: "#939494",
 };
 
 export const MainTheme = createTheme({
@@ -72,17 +79,53 @@ export const MainTheme = createTheme({
       main: themeColors.success,
       dark: darken(themeColors.success, 0.2),
     },
-
     error: {
       lighter: alpha(themeColors.error, 0.1),
       light: lighten(themeColors.error, 0.3),
       main: themeColors.error,
       dark: darken(themeColors.error, 0.2),
     },
+    golden: {
+      main: themeColors.golden,
+    },
+    text: {
+      main: themeColors.text,
+    },
+    black: {
+      main: themeColors.black,
+    },
+    white: {
+      main: themeColors.white,
+    },
+    green: {
+      lighter: themeColors.green100,
+      light: themeColors.green300,
+      main: themeColors.green500,
+    },
+    grey: {
+      lighter: themeColors.grey100,
+      light: themeColors.grey300,
+    },
   },
   breakpoints: defaultBreakpoint,
   typography: {
     fontFamily: sansThai.style.fontFamily,
+
+    headings: {
+      fontWeight: 400,
+      fontSize: 28,
+    },
+    SubHeading: {
+      fontWeight: 400,
+      fontSize: 28,
+    },
+    H1: {
+
+    },
+    Body1: {
+
+    },
+
   },
   components: {
     MuiButton: {
@@ -95,12 +138,23 @@ export const MainTheme = createTheme({
           textTransform: "none",
           paddingLeft: 16,
           paddingRight: 16,
-          [up_md]: { height: 42 },
-          [only_md]: { height: 42 },
-          [down_md]: { height: 42 },
+          backgroundColor: themeColors.success,
         },
         contained: {
           borderRadius: "8px",
+          height: '40px',
+          minWidth: "105px",
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        variant: "outlined",
+      },
+      styleOverrides: {
+        root: {
+          backgroundColor: themeColors.white,
+          borderRadius: '8px',
         },
       },
     },

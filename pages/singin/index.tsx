@@ -12,33 +12,61 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
+import { SidebarContext } from "@/src/contexts/SidebarContext";
+import Loadding from "@/src/components/Loading";
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: (theme.vars ?? theme).palette.text.secondary,
-  ...theme.applyStyles("dark", {
-    backgroundColor: "#1A2027",
-  }),
-}));
-
-const Login = () => {
+const Singin = () => {
   const router = useRouter();
   const theme = useTheme();
+  const [loading, setLoad] = useState<boolean>(false);
   const [themeName, setThemeName] = useState("MainTheme");
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   useEffect(() => {
     (async () => {})();
   }, []);
+
+  async function fetchData(values: any) {
+    const { encryptStorage } = await import("@/src/components/storage");
+    setLoad(true);
+    const api = "http://localhost:8081/users/create";
+    await fetch(api, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const { users_id, username } = data?.data;
+        encryptStorage.setItem("users_id", users_id);
+        encryptStorage.setItem("username", username);
+        setLoad(false);
+        return data;
+      })
+      .catch((error) => {
+        setLoad(false);
+        console.error("Fetch error:", error);
+        throw error;
+      })
+      .finally(() => {
+        setLoad(false);
+        console.log("Fetch operation finished.");
+        router.push("/home");
+      });
+  }
 
   return (
     <>
@@ -49,6 +77,7 @@ const Login = () => {
         sx={{
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: theme.colors.green.main,
         }}
       >
         <Grid
@@ -66,8 +95,8 @@ const Login = () => {
             validationSchema={Yup.object().shape({
               username: Yup.string().required("Please enter your username."),
             })}
-            onSubmit={(values: any, actions: any) => {
-              console.log("values in>>", values);
+            onSubmit={async (values: any, actions: any) => {
+              await fetchData(values);
             }}
           >
             {({
@@ -92,15 +121,24 @@ const Login = () => {
                   }}
                 >
                   <Stack
-                    spacing={2}
+                    spacing={"20px"}
                     sx={{
                       padding: "0px 20px",
                       width: "-webkit-fill-available",
-                      maxWidth: "400px",
+                      maxWidth: "384px",
                     }}
                   >
-                    <Typography>Sing In</Typography>
+                    <Typography
+                      variant="headings"
+                      sx={{
+                        color: theme.colors.white.main,
+                        pb: "20px",
+                      }}
+                    >
+                      Sing in
+                    </Typography>
                     <TextField
+                      size="small"
                       variant="outlined"
                       id="username"
                       name="username"
@@ -139,10 +177,10 @@ const Login = () => {
             justifyContent: "center",
             alignItems: "center",
             height: isMobile ? "50dvh" : "100dvh",
-            backgroundColor: "tomato",
-            borderTopLeftRadius: isMobile ? "0px" : "18px",
-            borderBottomLeftRadius: "18px",
-            borderBottomRightRadius: isMobile ? "18px" : "0px",
+            backgroundColor: theme.colors.green.light,
+            borderTopLeftRadius: isMobile ? "0px" : "36px",
+            borderBottomLeftRadius: "36px",
+            borderBottomRightRadius: isMobile ? "36px" : "0px",
           }}
         >
           <Stack
@@ -155,18 +193,22 @@ const Login = () => {
           >
             <CardMedia
               component="img"
-              height="194"
-              image="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"
+              height={isMobile ? "132" : "230"}
+              image="/static/images/logo-login/logo_login.png"
               alt="image a board"
             />
-            <Typography variant="body1" sx={{ fontStyle: "italic" }}>
+            <Typography
+              variant="headings"
+              sx={{ fontStyle: "italic", color: theme.colors.white.main }}
+            >
               a Board
             </Typography>
           </Stack>
         </Grid>
       </Grid>
+      <Loadding openLoading={loading} />
     </>
   );
 };
-Login.getLayout = (page: any) => <BaseLayout>{page}</BaseLayout>;
-export default Login;
+Singin.getLayout = (page: any) => <BaseLayout>{page}</BaseLayout>;
+export default Singin;

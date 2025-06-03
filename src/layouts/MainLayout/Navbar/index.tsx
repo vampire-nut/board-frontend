@@ -14,54 +14,65 @@ import Menu from "@mui/material/Menu";
 import Sidebar from "../Sidebar";
 import Avatar from "@mui/material/Avatar";
 import { useEffect, useState } from "react";
-import { Button, Stack, useMediaQuery, useTheme } from "@mui/material";
+import { Button, Stack, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import { useRouter } from "next/router";
 
 export default function MenuAppBar() {
   const theme = useTheme();
   const router = useRouter();
   const [auth, setAuth] = useState<boolean>(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [username, setUsername] = useState<string>("");
+  const settings = ["Logout"];
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const isMobile = useMediaQuery(theme.breakpoints.down("se"));
-  console.log("isMobile ==> ", isMobile);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuth(event.target.checked);
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
   };
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleCloseUserMenu = async () => {
+    const { encryptStorage } = await import("@/src/components/storage");
+    encryptStorage.clear();
+    window.location.href = "/singin";
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    router.push("/login");
+    router.push("/singin");
   };
 
   useEffect(() => {
     (async () => {
       const { encryptStorage } = await import("@/src/components/storage");
-      const username = encryptStorage?.getItem("username") || "";
+      const user = encryptStorage.getItem("username") || "";
+      setUsername(user);
+      if (!!user) {
+        setAuth(true);
+      }
     })();
   }, []);
+
+  useEffect(() => {}, [username]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
           <Typography
-            variant="h6"
+            variant="headings"
             component="div"
             sx={{ flexGrow: 1, fontStyle: "italic" }}
           >
             a Board
           </Typography>
-
+          <Button
+            variant="contained"
+            onClick={(e) => handleClick(e)}
+            sx={{ marginRight: "10px", display: auth ? "none" : "flex" }}
+          >
+            Sing In
+          </Button>
           {isMobile ? (
             <Sidebar />
           ) : (
@@ -75,14 +86,41 @@ export default function MenuAppBar() {
                     alignItems: "center",
                   }}
                 >
-                  <Typography variant="Body1">Username...</Typography>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                  <Typography variant="Body1">{`${username}`}</Typography>
+
+                  <Box sx={{ flexGrow: 0 }}>
+                    <Tooltip title="Open settings">
+                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt="" src="/static/images/avatar/1.jpg" />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      sx={{ mt: "45px" }}
+                      id="menu-appbar"
+                      anchorEl={anchorElUser}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      open={Boolean(anchorElUser)}
+                      onClose={handleCloseUserMenu}
+                    >
+                      {settings.map((setting) => (
+                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                          <Typography sx={{ textAlign: "center" }}>
+                            {setting}
+                          </Typography>
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </Box>
                 </Stack>
-              ) : (
-                <Button variant="contained" onClick={(e) => handleClick(e)}>
-                  Sing In
-                </Button>
-              )}
+              ) : null}
             </>
           )}
         </Toolbar>

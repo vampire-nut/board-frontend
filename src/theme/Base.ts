@@ -42,6 +42,30 @@ declare module "@mui/material/styles" {
         main: string;
         dark: string;
       };
+      golden: {
+        main: string;
+      };
+      text: {
+        main: string;
+      };
+      black: {
+        main: string;
+      };
+      white: {
+        main: string;
+      };
+      green: {
+        lighter: string;
+        light: string;
+        main: string;
+        dark: string;
+      };
+      grey: {
+        lighter: string;
+        light: string;
+        main: string;
+        dark: string;
+      };
     };
   }
 
@@ -71,9 +95,47 @@ declare module "@mui/material/styles" {
         main: string;
         dark: string;
       };
+      golden: {
+        main: string;
+      };
+      text: {
+        main: string;
+      };
+      black: {
+        main: string;
+      };
+      white: {
+        main: string;
+      };
+      green: {
+        lighter: string;
+        light: string;
+        main: string;
+      };
+      grey: {
+        lighter: string;
+        light: string;
+      };
     };
   }
+
+  interface TypographyVariants {
+    headings?: React.CSSProperties;
+    SubHeading?: React.CSSProperties;
+    H1?: React.CSSProperties;
+    Body1?: React.CSSProperties;
+  }
+
+
+  interface TypographyVariantsOptions {
+    headings?: React.CSSProperties;
+    SubHeading?: React.CSSProperties;
+    H1?: React.CSSProperties;
+    Body1?: React.CSSProperties;
+  }
 }
+
+
 
 declare module "@mui/material/Typography" {
   interface TypographyPropsVariantOverrides {

@@ -14,10 +14,13 @@ import MailIcon from "@mui/icons-material/Mail";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Menu_Nav_List, { MenuItemProps } from "@/src/data/MenuNav";
+import LeftBar from "../Leftbar";
+import { useTheme } from "@mui/material";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
 export default function SwipeableTemporaryDrawer() {
+  const theme = useTheme();
   const [state, setState] = React.useState({
     top: false,
     left: false,
@@ -27,35 +30,37 @@ export default function SwipeableTemporaryDrawer() {
 
   const menu = Menu_Nav_List;
   console.log("menu ==> ", menu);
-  
+
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event &&
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        if (
+          event &&
+          event.type === "keydown" &&
+          ((event as React.KeyboardEvent).key === "Tab" ||
+            (event as React.KeyboardEvent).key === "Shift")
+        ) {
+          return;
+        }
 
-      setState({ ...state, [anchor]: open });
-    };
+        setState({ ...state, [anchor]: open });
+      };
 
   const list = (anchor: Anchor) => (
+    
     <Box
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
       sx={{
         width: anchor === "top" || anchor === "bottom" ? "auto" : 250,
-        backgroundColor: "green",
+        backgroundColor: theme.colors.green.main,
+        height: '100dvh'
       }}
     >
-      <List>
-        <ListItem key={"onBack"} disablePadding>
+      <List sx={{padding: '16px', }}>
+        <ListItem key={"onBack"} disablePadding sx={{ mb: '20px'}}>
           <ListItemButton onClick={toggleDrawer(anchor, false)}>
             <ListItemIcon>
               <ArrowBackIcon
@@ -64,21 +69,7 @@ export default function SwipeableTemporaryDrawer() {
             </ListItemIcon>
           </ListItemButton>
         </ListItem>
-
-        {menu?.map((d:MenuItemProps, index: number) => (
-          <ListItem key={d?.id} disablePadding>
-            <ListItemButton
-              onClick={() => {
-                console.log("click !! ", d?.path);
-              }}
-            >
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={d?.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <LeftBar colorMain={theme.colors.white.main}/>
       </List>
     </Box>
   );
@@ -87,13 +78,11 @@ export default function SwipeableTemporaryDrawer() {
     <div>
       {(["right"] as const).map((anchor) => (
         <React.Fragment key={anchor}>
-          {/* <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button> */}
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}
             onClick={toggleDrawer("right", true)}
           >
             <MenuIcon />

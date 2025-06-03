@@ -1,41 +1,31 @@
 import { ReactNode, createContext, useState } from "react";
 export type SidebarContextType = {
-    sidebarOpen?: any;
-    toggleSidebar?: () => void;
-    openSidebar?: () => void;
-    closeSidebar?: () => void;
-    loading?: boolean;
-    setLoad?: (load: boolean) => void;
+  loading?: boolean;
+  setLoad?: (load: boolean) => void;
 };
 
 export const SidebarContext = createContext<SidebarContextType>(
-    {} as SidebarContextType
+  {} as SidebarContextType
 );
 
 type Props = {
-    children: ReactNode;
+  children: ReactNode;
 };
 
 export function SidebarProvider({ children }: Props) {
-    const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
-    const closeSidebar = () => setSidebarOpen(false);
-    const openSidebar = () => setSidebarOpen(true);
-    const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-    const [loading, setLoad] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const setLoad = (loading: boolean) => {
+    setLoading(loading);
+  };
 
-
-    return (
-        <SidebarContext.Provider
-            value={{
-                sidebarOpen,
-                toggleSidebar,
-                openSidebar,
-                closeSidebar,
-                loading,
-                setLoad,
-            }}
-        >
-            {children}
-        </SidebarContext.Provider>
-    );
+  return (
+    <SidebarContext.Provider
+      value={{
+        loading,
+        setLoad,
+      }}
+    >
+      {children}
+    </SidebarContext.Provider>
+  );
 }

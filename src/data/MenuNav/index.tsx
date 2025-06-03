@@ -8,7 +8,7 @@ const Menu_Nav_List = [
   {
     id: "ourblog",
     title: "Our Blog",
-    icon: "solar:gallery-edit-broken",
+    icon: "material-symbols-light:edit-square-outline",
     path: "/our-blog",
   },
 ];

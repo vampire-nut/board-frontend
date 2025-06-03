@@ -1,15 +1,14 @@
 import CardItem, { CardItemProps } from "@/src/components/CardPost";
-import DeleteConfirmationDialog from "@/src/components/Dialog/DeletePostDialog";
 import EditPostDialog, {
   PostsProps,
 } from "@/src/components/Dialog/EditPostDialog";
 import ListHead from "@/src/components/ListHead";
 import Loadding from "@/src/components/Loading";
 import MainLayout from "@/src/layouts/MainLayout";
-import { Box, Button, List, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { Box, List, Typography } from "@mui/material";
+import { useState, useRef, useEffect } from "react";
 
-const Home = () => {
+const Blog = () => {
   const [loading, setLoad] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
   const [data, setData] = useState<Array<CardItemProps>>([]);
@@ -61,10 +60,28 @@ const Home = () => {
           setLoad(false);
         }, 1000);
         window.location.reload();
-
         console.log("Fetch operation finished.");
       });
   };
+
+  // async function fetchData() {
+  //   try {
+  //     const { encryptStorage } = await import("@/src/components/storage");
+  //     const users_id = encryptStorage.getItem("users_id");
+  //     const res = await fetch(
+  //       `http://localhost:8081/posts/${encodeURIComponent(users_id)}`
+  //     );
+  //     if (!res.ok) {
+  //       throw new Error("Failed to fetch dashboard data");
+  //     }
+  //     const jsonData = await res.json();
+  //     setData(jsonData?.data);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   } finally {
+  //     setLoad(false);
+  //   }
+  // }
 
   async function fetchData() {
     try {
@@ -145,7 +162,12 @@ const Home = () => {
       />
       <List sx={{ width: "100%", marginTop: "20px" }}>
         {data?.map((d: CardItemProps, index: number) => (
-          <CardItem key={d?.post_id} data={d} />
+          <CardItem
+            key={d?.post_id}
+            data={d}
+            is_edit={d?.is_edit}
+            is_delete={d?.is_delete}
+          />
         ))}
       </List>
       {isDialogOpen ? (
@@ -161,6 +183,6 @@ const Home = () => {
     </Box>
   );
 };
-Home.getLayout = (page: any) => <MainLayout>{page}</MainLayout>;
+Blog.getLayout = (page: any) => <MainLayout>{page}</MainLayout>;
 
-export default Home;
+export default Blog;

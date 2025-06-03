@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useContext } from "react";
 
 interface BaseLayoutProps {
   children?: ReactNode;
